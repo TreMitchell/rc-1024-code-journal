@@ -2,9 +2,12 @@
 const $form = document.querySelector('#entry-form');
 const $urlPreview = document.querySelector('#preview-image');
 const $photoUrlInput = document.querySelector('#photo-url');
+const $deleteButton = document.getElementById('delete-button');
+const $formTitle = document.querySelector('.new-entry');
 if (!$form) throw new Error('$form query failed!');
 if (!$urlPreview) throw new Error('$urlPreview query failed!');
 if (!$photoUrlInput) throw new Error('$photoUrlInput query failed!');
+if (!$deleteButton) throw new Error('$deleteButton query failed!');
 $photoUrlInput.addEventListener('input', function (event) {
   const target = event.target;
   $urlPreview.src = target.value || 'images/placeholder-image-square.jpg';
@@ -39,14 +42,33 @@ $form.addEventListener('submit', function (event) {
         $originalLi.replaceWith($newEntryElement);
       }
     }
-    const $formTitle = document.querySelector('.new-entry');
     $formTitle.textContent = 'New Entry';
+    $deleteButton.classList.add('hidden');
   }
   toggleNoEntries();
   writeData();
   $form.reset();
   $urlPreview.src = 'images/placeholder-image-square.jpg';
   data.editing = null;
+});
+$deleteButton.addEventListener('click', function () {
+  if (data.editing !== null) {
+    const entryId = data.editing.entryId;
+    // Remove the entry from the data model
+    data.entries = data.entries.filter((entry) => entry.entryId !== entryId);
+    // Remove the entry from the DOM
+    const $entryToDelete = document.querySelector(
+      `li[data-entry-id="${entryId}"]`,
+    );
+    if ($entryToDelete) {
+      $entryToDelete.remove();
+    }
+    // Reset data.editing and switch views back to 'entries'
+    data.editing = null;
+    toggleNoEntries();
+    viewSwap('entries');
+    $deleteButton.classList.add('hidden');
+  }
 });
 function renderEntry(entry) {
   const $li = document.createElement('li');
@@ -107,12 +129,8 @@ document.addEventListener('DOMContentLoaded', function () {
           $urlPreview.src =
             entry.photoUrl || 'images/placeholder-image-square.jpg';
           $form.elements.namedItem('content').value = entry.content;
-          const $formTitle = document.querySelector('.new-entry');
-          if ($formTitle) {
-            $formTitle.textContent = 'New Entry';
-          } else {
-            console.error('Form title element not found!');
-          }
+          $formTitle.textContent = 'Edit Entry';
+          $deleteButton.classList.remove('hidden');
           viewSwap('entry-form');
         }
       }

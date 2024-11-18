@@ -43,6 +43,13 @@ button {
   padding: 10px;
 }
 
+#delete-button {
+  color: red;
+  text-decoration: underline;
+  background-color: white;
+  cursor: pointer;
+}
+
 #entries-link {
   color: white;
   text-decoration: none;
