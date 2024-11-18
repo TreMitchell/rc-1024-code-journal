@@ -32,14 +32,40 @@ button {
   text-transform: uppercase;
 }
 
-/* @media only screen and (width >= 768px) {
-  .container {
-    max-width: 575px;
-    margin: 0 auto;
-    padding: 1rem;
-  }
+.new-entry-button {
+  background-color: rgb(84, 43, 128);
+  color: white;
+  border-radius: 10px;
+  text-align: center;
+  font-size: 1.5rem;
+  cursor: pointer;
+  text-decoration: none;
+  padding: 10px;
+}
 
-  .preview-image {
-    width: 100%;
-  }
-} */
+#entries-link {
+  color: white;
+  text-decoration: none;
+  padding: 15px;
+  font-size: 1rem;
+}
+
+.navbar {
+  display: flex;
+  align-items: center;
+}
+
+.entries-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.new-entry-button:hover {
+  background-color: red;
+}
+
+ul > li.row > .column-half > content {
+  margin: 0 auto;
+  text-align: center;
+}
