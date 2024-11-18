@@ -1,5 +1,7 @@
 const $form = document.querySelector('#entry-form') as HTMLFormElement;
-const $urlPreview = document.querySelector('#url-preview') as HTMLImageElement;
+const $urlPreview = document.querySelector(
+  '#preview-image',
+) as HTMLImageElement;
 const $photoUrlInput = document.querySelector('#photo-url') as HTMLInputElement;
 
 if (!$form) throw new Error('$form query failed!');
@@ -15,32 +17,54 @@ $form.addEventListener('submit', function (event: Event) {
   event.preventDefault();
 
   const newEntry = {
-    entryId: data.nextEntryId,
+    entryId: data.editing ? data.editing.entryId : data.nextEntryId,
     title: ($form.elements.namedItem('title') as HTMLInputElement).value,
     photoUrl: $photoUrlInput.value,
     content: ($form.elements.namedItem('content') as HTMLTextAreaElement).value,
   };
-  const $newEntryElement = renderEntry(newEntry);
-  const $entryList = document.getElementById('entry-list');
 
-  if ($entryList && $newEntryElement) {
-    $entryList.appendChild($newEntryElement);
+  if (data.editing === null) {
+    const $newEntryElement = renderEntry(newEntry);
+    const $entryList = document.getElementById('entry-list');
+
+    if ($entryList && $newEntryElement) {
+      $entryList.appendChild($newEntryElement);
+    }
+    data.nextEntryId++;
+    data.entries.unshift(newEntry);
+  } else {
+    const index = data.entries.findIndex(
+      (entry) => entry.entryId === newEntry.entryId,
+    );
+    if (index !== -1) {
+      data.entries[index] = newEntry;
+
+      const $originalLi = document.querySelector(
+        `li[data-entry-id="${newEntry.entryId}"]`,
+      );
+      const $newEntryElement = renderEntry(newEntry);
+
+      if ($originalLi && $newEntryElement) {
+        $originalLi.replaceWith($newEntryElement);
+      }
+    }
+    const $formTitle = document.querySelector('.new-entry') as HTMLElement;
+    $formTitle.textContent = 'New Entry';
   }
 
   toggleNoEntries();
-
-  data.nextEntryId++;
-  data.entries.unshift(newEntry);
-
   writeData();
 
   $form.reset();
   $urlPreview.src = 'images/placeholder-image-square.jpg';
+  data.editing = null;
 });
 
 function renderEntry(entry: JournalEntry): HTMLElement {
   const $li = document.createElement('li');
   $li.classList.add('row');
+
+  $li.setAttribute('data-entry-id', entry.entryId.toString());
 
   const $imgWrapper = document.createElement('div');
   $imgWrapper.classList.add('column-half');
@@ -54,7 +78,11 @@ function renderEntry(entry: JournalEntry): HTMLElement {
   $div.classList.add('column-half');
 
   const $h2 = document.createElement('h2');
+  $h2.classList.add('entry-title');
   $h2.textContent = entry.title;
+
+  const $pencilIcon = document.createElement('i');
+  $pencilIcon.classList.add('fas', 'fa-pencil-alt');
 
   const $p = document.createElement('p');
   $p.textContent = entry.content;
@@ -64,6 +92,7 @@ function renderEntry(entry: JournalEntry): HTMLElement {
   $div.appendChild($h2);
   $div.appendChild($p);
   $imgWrapper.appendChild($img);
+  $h2.appendChild($pencilIcon);
 
   return $li;
 }
@@ -88,6 +117,42 @@ document.addEventListener('DOMContentLoaded', function () {
     $ul.appendChild(entryElement);
   });
   toggleNoEntries();
+
+  $ul.addEventListener('click', function (event: Event) {
+    const target = event.target as HTMLElement;
+
+    if (target.classList.contains('fa-pencil-alt')) {
+      const $li = target.closest('li') as HTMLLIElement;
+      const entryId = $li.getAttribute('data-entry-id');
+      if (entryId) {
+        const entry = data.entries.find(
+          (e) => e.entryId === parseInt(entryId, 10),
+        );
+        if (entry) {
+          data.editing = entry;
+
+          ($form.elements.namedItem('title') as HTMLInputElement).value =
+            entry.title;
+          $photoUrlInput.value = entry.photoUrl;
+          $urlPreview.src =
+            entry.photoUrl || 'images/placeholder-image-square.jpg';
+          ($form.elements.namedItem('content') as HTMLTextAreaElement).value =
+            entry.content;
+
+          const $formTitle = document.querySelector(
+            '.new-entry',
+          ) as HTMLElement;
+          if ($formTitle) {
+            $formTitle.textContent = 'New Entry';
+          } else {
+            console.error('Form title element not found!');
+          }
+
+          viewSwap('entry-form');
+        }
+      }
+    }
+  });
 });
 
 function toggleNoEntries(): void {
