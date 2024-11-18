@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -17,10 +17,59 @@
   </head>
   <body>
     <header>
-      <div class="container"></div>
+      <div class="container">
+        <div class="row">
+          <div class="column-full navbar">
+            <h1 class="code-journal">Code Journal</h1>
+            <div>
+              <a href="#" id="entries-link"></a>
+            </div>
+          </div>
+        </div>
+      </div>
     </header>
     <main class="container">
-      <div data-view="entry-form"></div>
+      <div data-view="entry-form">
+        <div class="row">
+          <div class="column-full">
+            <h1 class="new-entry">New Entry</h1>
+          </div>
+        </div>
+      </div>
+      <!-- Form -->
+      <form id="entry-form">
+        <div class="row">
+          <!-- Photo URL -->
+          <div class="column-half">
+            <img
+              src="/images/placeholder-image-square.jpg"
+              alt="Image Preview"
+              class="preview-image" />
+          </div>
+          <div class="column-half">
+            <div class="input">
+              <label for="title">Title</label>
+              <input type="text" name="title" id="title" required />
+            </div>
+            <!-- Photo URL -->
+            <div class="input">
+              <label for="photo-url">Photo URL</label>
+              <input type="text" id="photo-url" name="photo-url" required />
+            </div>
+          </div>
+        </div>
+        <!-- Title -->
+
+        <!-- Notes -->
+        <div class="row">
+          <div class="column-full">
+            <label for="notes">Notes</label>
+            <textarea id="notes" cols="30" rows="10" required></textarea>
+          </div>
+        </div>
+        <!-- Save Button -->
+        <button class="column-full save-button">Save</button>
+      </form>
       <div data-view="entries" class="hidden"></div>
     </main>
     <script src="js/data.js"></script>

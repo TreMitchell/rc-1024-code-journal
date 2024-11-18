@@ -1,0 +1,45 @@
+header,
+button {
+  background-color: rgb(84, 43, 128);
+  color: white;
+}
+
+img,
+input,
+textarea {
+  width: 100%;
+}
+
+.column-half {
+  width: 50%;
+}
+
+.column-full {
+  width: 100%;
+}
+
+.input {
+  margin-bottom: 50px;
+}
+
+button {
+  display: block;
+  margin: 0 auto;
+  border-radius: 10px;
+  cursor: pointer;
+  height: 40px;
+  width: 70px;
+  text-transform: uppercase;
+}
+
+/* @media only screen and (width >= 768px) {
+  .container {
+    max-width: 575px;
+    margin: 0 auto;
+    padding: 1rem;
+  }
+
+  .preview-image {
+    width: 100%;
+  }
+} */
