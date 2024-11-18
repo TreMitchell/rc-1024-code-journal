@@ -22,7 +22,7 @@
           <div class="column-full navbar">
             <h1 class="code-journal">Code Journal</h1>
             <div>
-              <a href="#" id="entries-link"></a>
+              <a href="#" id="entries-link">Entries</a>
             </div>
           </div>
         </div>
@@ -70,7 +70,16 @@
         <!-- Save Button -->
         <button class="column-full save-button">Save</button>
       </form>
-      <div data-view="entries" class="hidden"></div>
+      <div data-view="entries" class="hidden">
+        <div class="row">
+          <div class="column-full entries-heading">
+            <h1>Entries</h1>
+            <p class="no-entries">No entries</p>
+            <a href="#" id="new-entry-button" class="new-entry-button">NEW</a>
+          </div>
+        </div>
+        <ul class="entry-list"></ul>
+      </div>
     </main>
     <script src="js/data.js"></script>
     <script src="js/main.js"></script>
