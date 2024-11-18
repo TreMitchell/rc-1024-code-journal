@@ -3,10 +3,15 @@ const $urlPreview = document.querySelector(
   '#preview-image',
 ) as HTMLImageElement;
 const $photoUrlInput = document.querySelector('#photo-url') as HTMLInputElement;
+const $deleteButton = document.getElementById(
+  'delete-button',
+) as HTMLButtonElement;
+const $formTitle = document.querySelector('.new-entry') as HTMLElement;
 
 if (!$form) throw new Error('$form query failed!');
 if (!$urlPreview) throw new Error('$urlPreview query failed!');
 if (!$photoUrlInput) throw new Error('$photoUrlInput query failed!');
+if (!$deleteButton) throw new Error('$deleteButton query failed!');
 
 $photoUrlInput.addEventListener('input', function (event: Event) {
   const target = event.target as HTMLInputElement;
@@ -48,8 +53,8 @@ $form.addEventListener('submit', function (event: Event) {
         $originalLi.replaceWith($newEntryElement);
       }
     }
-    const $formTitle = document.querySelector('.new-entry') as HTMLElement;
     $formTitle.textContent = 'New Entry';
+    $deleteButton.classList.add('hidden');
   }
 
   toggleNoEntries();
@@ -58,6 +63,29 @@ $form.addEventListener('submit', function (event: Event) {
   $form.reset();
   $urlPreview.src = 'images/placeholder-image-square.jpg';
   data.editing = null;
+});
+
+$deleteButton.addEventListener('click', function () {
+  if (data.editing !== null) {
+    const entryId = data.editing.entryId;
+
+    // Remove the entry from the data model
+    data.entries = data.entries.filter((entry) => entry.entryId !== entryId);
+
+    // Remove the entry from the DOM
+    const $entryToDelete = document.querySelector(
+      `li[data-entry-id="${entryId}"]`,
+    );
+    if ($entryToDelete) {
+      $entryToDelete.remove();
+    }
+
+    // Reset data.editing and switch views back to 'entries'
+    data.editing = null;
+    toggleNoEntries();
+    viewSwap('entries');
+    $deleteButton.classList.add('hidden');
+  }
 });
 
 function renderEntry(entry: JournalEntry): HTMLElement {
@@ -139,14 +167,8 @@ document.addEventListener('DOMContentLoaded', function () {
           ($form.elements.namedItem('content') as HTMLTextAreaElement).value =
             entry.content;
 
-          const $formTitle = document.querySelector(
-            '.new-entry',
-          ) as HTMLElement;
-          if ($formTitle) {
-            $formTitle.textContent = 'New Entry';
-          } else {
-            console.error('Form title element not found!');
-          }
+          $formTitle.textContent = 'Edit Entry';
+          $deleteButton.classList.remove('hidden');
 
           viewSwap('entry-form');
         }
